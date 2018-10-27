@@ -15,4 +15,10 @@
          where id = #{id}
     </update>
 
+    <insert id="insert" >
+        insert into test(`name`,`value`)
+        values(#{name},#{value})
+
+    </insert>
+
 </mapper>

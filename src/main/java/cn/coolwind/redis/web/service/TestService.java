@@ -17,4 +17,8 @@ public class TestService {
     public void update(Test test) {
         testDao.updateTest(test);
     }
+
+    public void insert(String name, String value) {
+        testDao.insert(name,value);
+    }
 }

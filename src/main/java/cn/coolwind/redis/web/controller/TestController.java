@@ -19,8 +19,16 @@ public class TestController {
     }
 
     @GetMapping("/update")
-    public void update(int id, String name, String value) {
+    public Object update(int id, String name, String value) {
         Test test = new Test(id,name,value);
         testService.update(test);
+        return "更新成功！";
     }
+
+    @GetMapping("/insert")
+    public Object insert(String name, String value) {
+        testService.insert(name, value);
+        return "插入成功！";
+    }
+
 }
