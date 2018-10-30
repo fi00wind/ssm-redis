@@ -6,8 +6,8 @@ import org.springframework.data.redis.connection.jedis.JedisConnection;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -47,6 +47,7 @@ public class RedisCache implements Cache {
             connection = jedisConnectionFactory.getConnection();
             RedisSerializer<Object> serializer = new JdkSerializationRedisSerializer();
             connection.set(serializer.serialize(key), serializer.serialize(value));
+            connection.lPush(serializer.serialize(id),serializer.serialize(key));
             System.out.println("写入缓存：" + key + "," + value);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,6 +89,7 @@ public class RedisCache implements Cache {
             connection = jedisConnectionFactory.getConnection();
             RedisSerializer<Object> serializer = new JdkSerializationRedisSerializer();
             res = connection.expire(serializer.serialize(key), 0);
+            connection.lRem(serializer.serialize(id),0,serializer.serialize(key));
             System.out.println("删除缓存：" + key);
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,9 +106,20 @@ public class RedisCache implements Cache {
         JedisConnection connection = null;
         try {
             connection = jedisConnectionFactory.getConnection();
-            connection.flushDb();
-            connection.flushAll();
-            System.out.println("清空缓存！");
+            RedisSerializer<Object> serializer = new JdkSerializationRedisSerializer();
+//            connection.flushDb();
+//            connection.flushAll();
+            Long length = connection.lLen(serializer.serialize(id));
+            if (0 == length) {
+                return;
+            }
+            List<byte[]> keys = connection.lRange(serializer.serialize(id),0,length-1);
+            for (byte[] key :keys) {
+                connection.expireAt(key,0);
+                System.out.println("删除缓存:"+serializer.deserialize(key).toString());
+            }
+            connection.expireAt(serializer.serialize(id),0);
+            keys.clear();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

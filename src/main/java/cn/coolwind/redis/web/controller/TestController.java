@@ -1,6 +1,7 @@
 package cn.coolwind.redis.web.controller;
 
 import cn.coolwind.redis.core.entity.Test;
+import cn.coolwind.redis.core.entity.Test2;
 import cn.coolwind.redis.web.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,24 @@ public class TestController {
     @GetMapping("/insert")
     public Object insert(String name, String value) {
         testService.insert(name, value);
+        return "插入成功！";
+    }
+
+    @GetMapping("/select2")
+    public Object select2(int id) {
+        return testService.getById2(id);
+    }
+
+    @GetMapping("/update")
+    public Object update2(int id, String name, String value) {
+        Test2 test = new Test2(id,name,value);
+        testService.update2(test);
+        return "更新成功！";
+    }
+
+    @GetMapping("/insert")
+    public Object insert2(String name, String value) {
+        testService.insert2(name, value);
         return "插入成功！";
     }
 
