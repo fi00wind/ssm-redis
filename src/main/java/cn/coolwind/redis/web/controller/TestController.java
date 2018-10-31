@@ -37,17 +37,22 @@ public class TestController {
         return testService.getById2(id);
     }
 
-    @GetMapping("/update")
+    @GetMapping("/update2")
     public Object update2(int id, String name, String value) {
         Test2 test = new Test2(id,name,value);
         testService.update2(test);
         return "更新成功！";
     }
 
-    @GetMapping("/insert")
+    @GetMapping("/insert2")
     public Object insert2(String name, String value) {
         testService.insert2(name, value);
         return "插入成功！";
+    }
+
+    @GetMapping("/all")
+    public Object getAll(int id) {
+        return testService.selectAll(id);
     }
 
 }

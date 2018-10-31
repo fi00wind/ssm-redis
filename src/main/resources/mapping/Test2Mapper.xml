@@ -21,4 +21,19 @@
 
     </insert>
 
+    <resultMap id="joinMap" type="cn.coolwind.redis.core.entity.TestDTO">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name1" jdbcType="VARCHAR" property="name1"/>
+        <result column="name2" jdbcType="VARCHAR" property="name2"/>
+        <result column="value1" jdbcType="VARCHAR" property="value1"/>
+        <result column="value2" jdbcType="VARCHAR" property="value2"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="joinMap" useCache="false">
+        SELECT a.id,a.name name1,a.value value1,b.name name2,b.value value2
+         FROM test a,test2 b
+         where a.id = b.id and a.id = #{id}
+    </select>
+
+
 </mapper>
